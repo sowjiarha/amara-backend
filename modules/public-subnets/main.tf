@@ -1,11 +1,14 @@
-resource "aws_subnet" "main" {
+resource "aws_subnet" "pub-sub" {
   vpc_id = var.vpc_id
-  cidr_block = var.pub_cidr
+  count = length(var.pub_cidr)
+  cidr_block = var.pub_cidr[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
   tags = {
-    Name = "public-subnet1"
+    Name = "public-${count.index}"
   }
 }
+data "aws_availability_zones" "available" {}
 resource "aws_route_table" "r" {
   vpc_id = var.vpc_id
 
@@ -48,7 +51,7 @@ resource "aws_network_acl" "main" {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
-    cidr_block = var.pub_cidr
+    cidr_block = "10.1.1.0/24"
     from_port  = 32768
     to_port    = 61000
   }
@@ -56,7 +59,7 @@ resource "aws_network_acl" "main" {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
-    cidr_block = var.pub_cidr
+    cidr_block = "10.1.1.0/24"
     from_port  = 22
     to_port    = 22
   }
