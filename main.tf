@@ -14,7 +14,7 @@ module "amara-private-subnets" {
 module "amara-bastion-ec2" {
   source = "./modules/BastionHost"
   vpc_id = module.amara-backend-vpc.vpc_id
-  subnet_id = module.amara-public-subnets.subnet_id 
+  subnet_id = module.amara-public-subnets.subnet_id
   security_groups = module.amara-ec2-Prod-1.security_groups
 
 }
@@ -24,5 +24,9 @@ module "amara-ec2-Prod-1" {
   subnet_id = module.amara-public-subnets.subnet_id
   security_groups = module.amara-bastion-ec2.security_groups
   cidr_blocks = module.amara-public-subnets.cidr_blocks
+}
+module "amara-alb" {
+  source = "./modules/load-balancer"
+  subnets = module.amara-public-subnets.subnets
 }
 
