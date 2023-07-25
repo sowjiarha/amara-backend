@@ -1,5 +1,5 @@
 variable "pri_cidr" {
-  default = "10.1.3.0/24"
+  default = ["10.1.3.0/24", "10.1.4.0/24"]
 }
 variable "environment" {
   default = "dev"
